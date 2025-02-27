@@ -1,7 +1,7 @@
 # OMT-SAM
 ## Description
 
-This repository contains code for training and evaluating a Organ-aware multi-scale medical image segmentation model using text prompt engineering on the Flare 2021 grand challenge dataset. This model is  
+This repository contains code for training and evaluating an Organ-aware multi-scale medical image segmentation model using text prompt engineering on the Flare 2021 grand challenge dataset. 
 
 ## Installation
 #### Environment
@@ -18,7 +18,7 @@ cd OMT-SAM
 pip install -r requirements.txt
 ```
 ## Model Training
-Download checkpoint and place it at workdir/best_model.pth
+Download checkpoint and place it at 'workdir/OMT-SAM/best_model.pth'
 
 Download the Flare 2021 dataset, this dataset contains 361 abdomen CT scans, each scan contains an annotation mask with 4 organs: liver ( label=1 ), kidney ( label=2 ), spleen ( label=3 ), and pancreas ( label=4 ).
 ### Data Preprocessing

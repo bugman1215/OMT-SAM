@@ -35,7 +35,7 @@ def setup_directories(base_path, organs):
         os.makedirs(join(base_path, "imgs", organ), exist_ok=True)
         os.makedirs(join(base_path, "gts", organ), exist_ok=True)
 
-def process_files(nii_path, gt_path, output_path, num_files=10):
+def process_files(nii_path, gt_path, output_path, num_files=361):
     setup_directories(output_path, organs)
     
     if not os.path.exists(gt_path):

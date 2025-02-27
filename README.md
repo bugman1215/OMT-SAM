@@ -18,9 +18,9 @@ cd OMT-SAM
 pip install -r requirements.txt
 ```
 ## Model Training
-Download checkpoint and place it at `workdir/SAM/sam_vit_b_01ec64.pth`
+Download [SAM checkpoint](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth) and place it at `workdir/SAM/sam_vit_b_01ec64.pth`
 
-Download the Flare 2021 dataset, this dataset contains 361 abdomen CT scans, each scan contains an annotation mask with 4 organs: liver ( label=1 ), kidney ( label=2 ), spleen ( label=3 ), and pancreas ( label=4 ).
+Download the [Flare 2021 training dataset](https://zenodo.org/records/5903672), this dataset contains 361 abdomen CT scans, each scan contains an annotation mask with 4 organs: liver ( label=1 ), kidney ( label=2 ), spleen ( label=3 ), and pancreas ( label=4 ).
 ### Data Preprocessing
 Install `cc3d`: `pip install connected-components-3d`
 

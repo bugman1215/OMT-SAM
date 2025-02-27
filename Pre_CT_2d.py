@@ -24,9 +24,9 @@ WINDOW_LEVEL = 40
 WINDOW_WIDTH = 400
 
 # Paths
-nii_path = "flaresmall/images"
-gt_path = "flaresmall/labels/TrainingMask"
-base_output_path = "flaredata"  # Matches your file location
+nii_path = "data/Flare2021/Images"
+gt_path = "data/Flare2021/TrainingMask"
+base_output_path = "data/Flare2021npz"  
 img_name_suffix = "_0000.nii.gz"
 gt_name_suffix = ".nii.gz"
 
@@ -141,5 +141,5 @@ def process_files(nii_path, gt_path, output_path, num_files=10):
             continue
 
 if __name__ == "__main__":
-    process_files(nii_path, gt_path, base_output_path, num_files=10)
+    process_files(nii_path, gt_path, base_output_path, num_files=361)
     logger.info("Processing complete")

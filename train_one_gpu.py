@@ -338,7 +338,7 @@ def train_val_split(dataset, val_ratio=0.2, seed=2023, val_organs=["liver", "kid
 # Main training script
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--tr_npy_path", type=str, default="data/flare2021npy")
+    parser.add_argument("-i", "--tr_npy_path", type=str, default="data/Flare2021npz")
     parser = argparse.ArgumentParser()
     parser.add_argument("-task_name", type=str, default="MedSAM-ViT-B")
     parser.add_argument("-model_type", type=str, default="vit_b")
@@ -396,7 +396,7 @@ def main():
     )
     seg_loss = monai.losses.DiceLoss(sigmoid=True, squared_pred=True)
     ce_loss = nn.BCEWithLogitsLoss()
-    full_dataset = NpyDataset("data/flare2021npy")
+    full_dataset = NpyDataset("data/Flare2021npz")
     train_dataset, val_datasets = train_val_split(full_dataset)
 
     print(f"Number of training samples: {len(train_dataset)}")

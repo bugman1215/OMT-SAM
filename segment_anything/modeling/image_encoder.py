@@ -105,23 +105,7 @@ class ImageEncoderViT(nn.Module):
 
         else:
             self.neck = self.get_one_neck(embed_dim, out_chans)
-        # self.neck = nn.Sequential(
-        #     nn.Conv2d(
-        #         embed_dim,
-        #         out_chans,
-        #         kernel_size=1,
-        #         bias=False,
-        #     ),
-        #     LayerNorm2d(out_chans),
-        #     nn.Conv2d(
-        #         out_chans,
-        #         out_chans,
-        #         kernel_size=3,
-        #         padding=1,
-        #         bias=False,
-        #     ),
-        #     LayerNorm2d(out_chans),
-        # )
+ 
 
     def get_one_neck(self, embed_dim, out_chans):
         return nn.Sequential(
@@ -150,30 +134,30 @@ class ImageEncoderViT(nn.Module):
 
 
         if self.ms_features:
-            # selected_layers = [8, 9, 10, 11]  # 选择最后四层
+            # selected_layers = [8, 9, 10, 11]  # select last four layers
             if not self.one_neck: # multiple neck
                 features = []
                 for i, blk in enumerate(self.blocks):
                     x = blk(x)
                     if i in self.selected_layers:
-                        # 将 (B,H,W,C) 转换为 (B,C,H,W)，再经过 neck 层
+                        # convert (B,H,W,C) to (B,C,H,W)，then pass neck
                         feat = x.permute(0, 3, 1, 2)
                         feat = self.neck_list[i-8](feat)
                         features.append(feat)
 
-                return features  # 返回最后四层经过 neck 的特征
+                return features  # return features of the last four layers after passing neck
                 
             else: # one neck
                 features = []
                 for i, blk in enumerate(self.blocks):
                     x = blk(x)
                     if i in self.selected_layers:
-                        # 将 (B,H,W,C) 转换为 (B,C,H,W)，再经过 neck 层
+                        # convert (B,H,W,C) to (B,C,H,W)，then pass neck
                         feat = x.permute(0, 3, 1, 2)
                         feat = self.neck(feat)
                         features.append(feat)
 
-                return features  # 返回最后四层经过 neck 的特征
+                return features  # return features of the last four layers after passing neck
 
             
         else:

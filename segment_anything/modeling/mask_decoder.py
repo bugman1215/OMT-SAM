@@ -74,36 +74,14 @@ class MaskDecoder(nn.Module):
         self.iou_prediction_head = MLP(
             transformer_dim, iou_head_hidden_dim, self.num_mask_tokens, iou_head_depth
         )
-        # 修改
+     
         self.fusion_conv = nn.Conv2d(
-            in_channels=transformer_dim * num_feature_scales,  # 假设每个特征图的通道数一致
+            in_channels=transformer_dim * num_feature_scales,  # assume each feature map has same channel numbers
             out_channels=transformer_dim,
             kernel_size=1
         )
 
-    # def fuse_multiscale_features(self, features: torch.Tensor) -> torch.Tensor:
-    #     # 使用最后一个特征图的尺寸作为 target_size
-    #     target_size = features[-1].size()[2:4]  # target_size 应该是 [height, width] 的形式
-
-    #     # 打印 target_size 的值
-    #     # print(f"Target size: {target_size}")
-
-    #     # 调整前12个特征图的通道数到256
-    #     reduced_features = [
-    #         self.channel_reduction(f.permute(0, 3, 1, 2)) if f.shape[1] == 768 else f
-    #         for f in features
-    #     ]
-
-    #     resized_features = []
-    #     for f in reduced_features:
-    #         if f.dim() == 3:  # 如果是3D张量，增加一个 batch 维度
-    #             f = f.unsqueeze(0)
-    #         resized_features.append(F.interpolate(f, size=target_size, mode='bilinear', align_corners=False))
-
-    #     concatenated_features = torch.cat(resized_features, dim=1)  # 沿着通道维度拼接
-    #     fused_features = self.fusion_conv(concatenated_features)  # 融合
-
-    #     return fused_features
+   
 
     def fuse_multiscale_features(self, features: torch.Tensor) -> torch.Tensor:
 
@@ -142,21 +120,19 @@ class MaskDecoder(nn.Module):
           torch.Tensor: batched predictions of mask quality
         """
 
-        # 将多尺度特征上/下采样到相同尺寸，然后融合
+        # up/down sample the multipscale features to the same size, then merge
         image_embeddings = self.fuse_multiscale_features(image_embeddings)
         
 
-        # print("!!!!!!!", type(image_embeddings), image_embeddings[0].shape)
-
         masks, iou_pred = self.predict_masks(
-            image_embeddings=image_embeddings,  # 使用融合后的特征
+            image_embeddings=image_embeddings,  # use merged feature
             image_pe=image_pe,
             sparse_prompt_embeddings=sparse_prompt_embeddings,
             clip_prompt_embeddings=clip_prompt_embeddings,
             dense_prompt_embeddings=dense_prompt_embeddings,
         )
 
-        # 选择单掩码或多掩码输出
+        # choose single/multi mask output
         if multimask_output:
             mask_slice = slice(1, None)
         else:
@@ -172,7 +148,7 @@ class MaskDecoder(nn.Module):
         image_embeddings: torch.Tensor,
         image_pe: torch.Tensor,
         sparse_prompt_embeddings: torch.Tensor,
-        #添加clip参数
+        #add clip parameters
         dense_prompt_embeddings: torch.Tensor,
         clip_prompt_embeddings: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -186,12 +162,7 @@ class MaskDecoder(nn.Module):
                 clip_prompt_embeddings = clip_prompt_embeddings.expand(
                     image_embeddings.shape[0], -1, -1
                 )
-        # 打印张量形状
-        # print(f"image_embeddings shape: {image_embeddings.shape}")
-        # print(f"sparse_prompt_embeddings shape: {sparse_prompt_embeddings.shape}")
-        # print(f"dense_prompt_embeddings shape: {dense_prompt_embeddings.shape}")
-        # print(f"clip_prompt_embeddings shape: {clip_prompt_embeddings.shape}")
-
+ 
         # Concatenate output tokens
         output_tokens = torch.cat(
             [self.iou_token.weight, self.mask_tokens.weight], dim=0

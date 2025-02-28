@@ -5,7 +5,7 @@ from open_clip import create_model_from_pretrained
 import torchvision.transforms as T
 
 
-# 定义跨模态注意力层
+# Define cross modal attention layer
 class MultiHeadCrossAttention(nn.Module):
     def __init__(self, embed_dim, num_heads):
         super(MultiHeadCrossAttention, self).__init__()
@@ -16,7 +16,7 @@ class MultiHeadCrossAttention(nn.Module):
         return attn_output, attn_weights
 
 
-# 修改后的 CLIP 模型，加入 cross-attention
+# clip altered with adding cross-attention
 class ModifiedCLIPModel(nn.Module):
     def __init__(self, clip_model, embed_dim, num_heads):
         super(ModifiedCLIPModel, self).__init__()
@@ -26,21 +26,14 @@ class ModifiedCLIPModel(nn.Module):
         self.text_projection = nn.Linear(512, embed_dim)
 
     def forward(self, images, text_input):
-        # 获取图像和文本的特征
-        image_features = self.clip_model.visual(images)  # 获取图像特征
-        text_features = self.clip_model.encode_text(text_input)  # 获取文本特征
-
-        # print(f"Image features shape: {image_features.shape}")
-        # print(f"Text features shape: {text_features.shape}")
-
+        # Obtain image and text features
+        image_features = self.clip_model.visual(images)  # Obtain image feature
+        text_features = self.clip_model.encode_text(text_input)  # Obtain text feature
         image_features = image_features.expand_as(text_features)
 
         image_features = self.image_projection(image_features)
 
         text_features = self.text_projection(text_features)
-
-
-        # print(f"Projected image features shape: {image_features.shape}")
 
         attn_output, attn_weights = self.cross_attention(image_features, text_features)
 
@@ -59,13 +52,10 @@ def create_modified_clip_model():
     for param in clip_model.parameters():
         param.requires_grad = False
 
-    # for param in modified_clip_model.cross_attention.parameters():
-    #     param.requires_grad = False
-
     return modified_clip_model
 
 
-# 提取经过跨模态注意力处理后的特征嵌入
+# Extract feature embedding after cross-modal attention processing
 def get_clip_embeddings(images, text_inputs) -> torch.Tensor:
     clip_model_name = "hf-hub:microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"
     embed_dim = 256

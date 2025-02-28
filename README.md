@@ -27,6 +27,8 @@ Install `cc3d`: `pip install connected-components-3d`
 ```bash
 python pre_CT_2d.py
 ```
+move data/descriptions/organ/descriptions.txt to data/Flare2021npz/imgs/organ/
+
 - adjust CT scans to [soft tissue](https://radiopaedia.org/articles/windowing-ct) window level (40) and width (400)
 - max-min normalization
 - resample image size to `1024x1024`
